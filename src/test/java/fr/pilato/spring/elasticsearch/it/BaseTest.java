@@ -19,10 +19,10 @@
 
 package fr.pilato.spring.elasticsearch.it;
 
-import org.apache.http.HttpHost;
 import org.apache.logging.log4j.Logger;
 import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.http.HttpHost;
 import org.elasticsearch.common.logging.ESLoggerFactory;
 import org.junit.AfterClass;
 import org.junit.Before;

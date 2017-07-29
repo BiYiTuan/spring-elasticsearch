@@ -17,31 +17,30 @@
  * under the License.
  */
 
-package fr.pilato.spring.elasticsearch.it.annotation.rest;
+package fr.pilato.spring.elasticsearch.it.xml.rest;
 
-import fr.pilato.spring.elasticsearch.ElasticsearchHighLevelRestClientFactoryBean;
-import fr.pilato.spring.elasticsearch.ElasticsearchRestClientFactoryBean;
+import org.elasticsearch.action.main.MainResponse;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
-public class AppConfig {
+import java.io.IOException;
 
-	@Bean
-	public RestClient esClient() throws Exception {
-		ElasticsearchRestClientFactoryBean factory = new ElasticsearchRestClientFactoryBean();
-		factory.setEsNodes(new String[]{"127.0.0.1:9200"});
-		factory.afterPropertiesSet();
-		return factory.getObject();
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
+public class RestHighLevelClientNamespaceTest extends AbstractXmlContextModel {
+    private final String[] xmlBeans = {"models/rest/rest-high-level-client-namespace/rest-high-level-client-namespace-context.xml"};
+
+    @Override
+    String[] xmlBeans() {
+        return xmlBeans;
     }
 
-	@Bean
-	public RestHighLevelClient esHighLevelClient() throws Exception {
-		ElasticsearchHighLevelRestClientFactoryBean factory = new ElasticsearchHighLevelRestClientFactoryBean();
-		factory.setClient(esClient());
-		factory.afterPropertiesSet();
-		return factory.getObject();
+    @Override
+    protected void checkUseCaseSpecific(RestClient client) throws IOException {
+        RestHighLevelClient highLevelClient = getHighLevelRestClient(null);
+        MainResponse info = highLevelClient.info();
+        assertThat(info, notNullValue());
+        assertThat(info.getClusterName(), notNullValue());
     }
 }
